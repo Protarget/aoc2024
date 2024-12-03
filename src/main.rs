@@ -2,6 +2,7 @@ use std::time::Instant;
 
 mod day1;
 mod day2;
+mod day3;
 
 fn main() {
     let day: i32 = std::env::args().nth(1).unwrap_or("1".into()).parse().expect("Invalid day");
@@ -15,6 +16,7 @@ fn main() {
     match day {
         1 => day1::run(input_path.as_str(), part),
         2 => day2::run(input_path.as_str(), part),
+        3 => day3::run(input_path.as_str(), part),
         _ => panic!("Unknown day specified")
     };
 
