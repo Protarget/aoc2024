@@ -17,20 +17,11 @@ impl WordSearch {
         }
     }
 
-    fn get_sequence(&self, sx: i32, sy: i32, ox: i32, oy: i32, from: i32, to: i32) -> String {
-        let mut buffer: Vec<char> = vec![];
-
-        for index in from..to {
-            let mc = self.get(sx + ox * index, sy + oy * index);
-            if mc.is_some() {
-                buffer.push(mc.unwrap())
-            }
-            else {
-                break
-            }
-        }
-
-        buffer.iter().collect()
+    fn get_sequence(&self, sx: i32, sy: i32, ox: i32, oy: i32, from: i32, to: i32) -> impl Iterator<Item = char> + '_ {
+        (from..to)
+            .map(move |index| self.get(sx + ox * index, sy + oy * index))
+            .take_while(|mc| mc.is_some())
+            .map(|mc| mc.unwrap())
     }
 }
 
@@ -52,7 +43,8 @@ fn part1(input_path: &str) {
         for y in 0..grid.height {
             if grid.get(x, y) == Some('X') {
                 for (dx, dy) in DIRECTIONS {
-                    if grid.get_sequence(x, y, dx, dy, 1, 4) == "MAS" {
+                    let s = grid.get_sequence(x, y, dx, dy, 1, 4);
+                    if s.eq("MAS".chars()) {
                         sum += 1;
                     }
                 }
@@ -74,7 +66,9 @@ fn part2(input_path: &str) {
             if grid.get(x, y) == Some('A') {
                 let s1 = grid.get_sequence(x, y, 1, 1, -1, 2);
                 let s2 = grid.get_sequence(x, y, 1, -1, -1, 2);
-                if (s1 == "MAS" || s1 == "SAM") && (s2 == "MAS" || s2 == "SAM") {
+                let s3 = grid.get_sequence(x, y, 1, 1, -1, 2);
+                let s4 = grid.get_sequence(x, y, 1, -1, -1, 2);
+                if (s1.eq("MAS".chars()) || s3.eq("SAM".chars())) && (s2.eq("MAS".chars()) || s4.eq("SAM".chars())) {
                     sum += 1
                 }
             }
