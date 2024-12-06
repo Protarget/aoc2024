@@ -26,7 +26,6 @@ fn part1(input_path: &str) {
 
         if sorted_update.iter().eq(update.iter()) {
             let middle_index = sorted_update.len() / 2;
-            println!("{:?} {}", sorted_update, middle_index);
             sum += sorted_update[middle_index];
         }
         
@@ -46,7 +45,6 @@ fn part2(input_path: &str) {
 
         if !sorted_update.iter().eq(update.iter()) {
             let middle_index = sorted_update.len() / 2;
-            println!("{:?} {}", sorted_update, middle_index);
             sum += sorted_update[middle_index];
         }
         
