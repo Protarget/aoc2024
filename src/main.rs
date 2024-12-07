@@ -6,6 +6,7 @@ mod day3;
 mod day4;
 mod day5;
 mod day6;
+mod day7;
 
 fn main() {
     let day: i32 = std::env::args().nth(1).unwrap_or("1".into()).parse().expect("Invalid day");
@@ -23,6 +24,7 @@ fn main() {
         4 => day4::run(input_path.as_str(), part),
         5 => day5::run(input_path.as_str(), part),
         6 => day6::run(input_path.as_str(), part),
+        7 => day7::run(&input_path.as_str(), part),
         _ => panic!("Unknown day specified")
     };
 
