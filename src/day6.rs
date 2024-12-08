@@ -1,15 +1,6 @@
-use std::{collections::HashSet, ops::{Add, Sub}};
+use std::collections::HashSet;
 
-#[derive(PartialEq, Eq, Clone, Copy, Hash, Debug)]
-enum Direction {
-    North,
-    East,
-    South,
-    West
-}
-
-#[derive(PartialEq, Eq, Clone, Copy, Hash, Debug)]
-struct Point(i64, i64);
+use crate::geometry::{Direction, Point};
 
 struct VisitedSet {
     width: usize,
@@ -27,66 +18,6 @@ struct PatrolMapIterator<'a> {
     position: Point,
     direction: Direction,
     overlay: Point
-}
-
-impl Direction {
-    fn offset(self) -> Point {
-        match self {
-            Direction::North => Point(0, -1),
-            Direction::East => Point(1, 0),
-            Direction::South => Point(0, 1),
-            Direction::West => Point(-1, 0),
-        }
-    }
-
-    fn turn_right(self) -> Direction {
-        match self {
-            Direction::North => Direction::East,
-            Direction::East => Direction::South,
-            Direction::South => Direction::West,
-            Direction::West => Direction::North
-        }
-    }
-
-    fn to_bit_mask(self) -> u8 {
-        match self {
-            Direction::North => 1,
-            Direction::East => 2,
-            Direction::South => 4,
-            Direction::West => 8
-        }
-    }
-}
-
-
-impl Add for Point {
-    type Output = Point;
-
-    fn add(self, other: Self) -> Self {
-        Point(self.0 + other.0, self.1  + other.1)
-    }
-}
-
-impl Sub for Point {
-    type Output = Point;
-
-    fn sub(self, other: Self) -> Self {
-        Point(self.0 - other.0, self.1 - other.1)
-    }
-}
-
-impl Point {
-    fn in_bounds(self, size: Point) -> bool {
-        self.0 >= 0 && self.0 < size.0 && self.1 >= 0 && self.1 < size.1
-    }
-
-    fn step(self, direction: Direction) -> Point {
-        self + direction.offset()
-    }
-
-    fn area(self) -> i64 {
-        self.0 * self.1
-    }
 }
 
 impl <'a> Iterator  for PatrolMapIterator<'a> {
