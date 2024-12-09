@@ -29,11 +29,11 @@ impl <'a> Iterator  for PatrolMapIterator<'a> {
 
             let mut changed_direction = false;
 
-            let mut new_position = self.position.step(self.direction);
+            let mut new_position = self.position + self.direction;
 
             while new_position.in_bounds(self.patrol_map.size) && (self.patrol_map.obstacles.is_visited(new_position, Direction::North) || new_position == self.overlay) {
                 self.direction = self.direction.turn_right();
-                new_position = self.position.step(self.direction);
+                new_position = self.position + self.direction;
                 changed_direction = true;
             }
 

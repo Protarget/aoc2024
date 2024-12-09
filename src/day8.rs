@@ -61,7 +61,7 @@ impl CityMap {
                         let mut antinode2 = antenna1 + a2delta;
 
                         let mut evaluated1 = false;
-                        while antinode1.in_bounds(self.size) && (!bounded || !evaluated1){
+                        while antinode1.in_bounds(self.size) && (!bounded || !evaluated1) {
                             result.push(antinode1);
                             antinode1 = antinode1 + a1delta;
                             evaluated1 = true;

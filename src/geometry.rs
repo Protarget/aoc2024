@@ -1,4 +1,4 @@
-use std::ops::{Add, Sub};
+use std::ops::{Add, Mul, Sub};
 
 #[derive(PartialEq, Eq, Clone, Copy, Hash, Debug)]
 pub enum Direction {
@@ -41,7 +41,7 @@ impl Direction {
 }
 
 
-impl Add for Point {
+impl Add<Point> for Point {
     type Output = Point;
 
     fn add(self, other: Self) -> Self {
@@ -49,7 +49,7 @@ impl Add for Point {
     }
 }
 
-impl Sub for Point {
+impl Sub<Point> for Point {
     type Output = Point;
 
     fn sub(self, other: Self) -> Self {
@@ -57,16 +57,45 @@ impl Sub for Point {
     }
 }
 
+impl Mul<i64> for Point {
+    type Output = Point;
+
+    fn mul(self, other: i64) -> Self {
+        Point(self.0 * other, self.1 * other)
+    }
+}
+
+impl Add<Direction> for Point {
+    type Output = Point;
+
+    fn add(self, other: Direction) -> Self {
+        self + other.offset()
+    }
+}
+
+impl Sub<Direction> for Point {
+    type Output = Point;
+
+    fn sub(self, other: Direction) -> Self {
+        self - other.offset()
+    }
+}
+
+
 impl Point {
     pub fn in_bounds(self, size: Point) -> bool {
         self.0 >= 0 && self.0 < size.0 && self.1 >= 0 && self.1 < size.1
     }
 
-    pub fn step(self, direction: Direction) -> Point {
-        self + direction.offset()
-    }
-
     pub fn area(self) -> i64 {
         self.0 * self.1
+    }
+
+    pub fn taxicab_distance(self, other: Point) -> i64 {
+        (self.0 - other.0).abs() + (self.1 - other.1).abs()
+    }
+
+    pub fn dot_product(self, other: Point) -> i64 {
+        (self.0 * other.0) + (self.1 * other.1)
     }
 }
