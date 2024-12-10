@@ -43,7 +43,7 @@ fn parse_row(input: &str) -> Vec<i64> {
 
 fn row_valid_with_error(row: &Vec<i64>) -> bool {
     let is_already_valid = row_valid(row, row.len() + 1);
-    
+
     if !is_already_valid {
         (0..row.len()).any(|i| row_valid(row, i))
     }

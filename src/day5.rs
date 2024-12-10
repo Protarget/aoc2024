@@ -28,7 +28,7 @@ fn part1(input_path: &str) {
             let middle_index = sorted_update.len() / 2;
             sum += sorted_update[middle_index];
         }
-        
+
     }
 
     println!("{}", sum);
@@ -47,7 +47,7 @@ fn part2(input_path: &str) {
             let middle_index = sorted_update.len() / 2;
             sum += sorted_update[middle_index];
         }
-        
+
     }
 
     println!("{}", sum);

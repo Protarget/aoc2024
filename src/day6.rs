@@ -90,7 +90,7 @@ impl From<&str> for PatrolMap {
         let mut y = 0;
         let mut width = 0;
         let mut start_position = Point(0, 0);
-    
+
         for c in input.chars() {
             match c {
                 '#' => { obstacle_set.insert(Point(x, y)); }
@@ -102,12 +102,12 @@ impl From<&str> for PatrolMap {
                 }
                 _ => {}
             };
-    
+
             x += 1;
         }
 
         let size = Point(width, y + 1);
-        
+
         PatrolMap {
             size,
             start_position,

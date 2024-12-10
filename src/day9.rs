@@ -139,7 +139,7 @@ fn parse_input(input_string: &str, split_files: bool) -> DiskMap {
 
     for (i, c) in input_string.chars().enumerate() {
         let size = c.to_digit(10).unwrap() as u64;
-        
+
         if i % 2 == 0 {
             if split_files {
                 for _ in 0..size {
@@ -169,10 +169,10 @@ fn parse_input(input_string: &str, split_files: bool) -> DiskMap {
                     blocks.push(DiskBlock {
                         files: vec![],
                         free_space: 1
-                    }); 
+                    });
 
                     fit_map[1].push(blocks.len() - 1);
-                }        
+                }
             } else {
                 blocks.push(DiskBlock {
                     files: vec![],

@@ -1,4 +1,4 @@
-use std::ops::{Add, Mul, Sub};
+use std::{fmt::Display, ops::{Add, Mul, Sub}};
 
 #[derive(PartialEq, Eq, Clone, Copy, Hash, Debug)]
 pub enum Direction {
@@ -10,6 +10,11 @@ pub enum Direction {
 
 #[derive(PartialEq, Eq, Clone, Copy, Hash, Debug)]
 pub struct Point(pub i64, pub i64);
+
+pub struct Grid<T> {
+    pub size: Point,
+    content: Box<[T]>
+}
 
 impl Direction {
     pub fn offset(self) -> Point {
@@ -40,6 +45,11 @@ impl Direction {
     }
 }
 
+impl Display for Point {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "({}, {})", self.0, self.1)
+    }
+}
 
 impl Add<Point> for Point {
     type Output = Point;
@@ -97,5 +107,72 @@ impl Point {
 
     pub fn dot_product(self, other: Point) -> i64 {
         (self.0 * other.0) + (self.1 * other.1)
+    }
+}
+
+impl <'a, T: Into<&'a str>> From<T> for Grid<char> {
+    fn from(value: T) -> Self {
+        let mut content = vec![];
+        let mut width = 0;
+        let mut height: i64 = 0;
+        let string_content: &str = value.into();
+        let mut x = 0;
+        let mut y = 0;
+
+        for c in string_content.chars() {
+            match c {
+                '\n' => {
+                    width = width.max(x);
+                    x = 0;
+                    y += 1;
+                }
+                v => {
+                    content.push(v);
+                    x += 1;
+                }
+            }
+        }
+
+        height = y + 1;
+
+        let slice_content = content.into_boxed_slice();
+
+        Grid {
+            size: Point(width, height),
+            content: slice_content
+        }
+    }
+}
+
+impl <T> Grid<T> {
+    pub fn get(&self, position: Point) -> Option<&T> {
+        let index = self.calculate_index(position);
+        index.map(|x| &self.content[x])
+    }
+
+    pub fn get_with_index(&self, position: Point) -> Option<(Point, &T)> {
+        let index = self.calculate_index(position);
+        index.map(|x| (position, &self.content[x]))
+    }
+
+    pub fn map<T2>(&self, f: fn(&T) -> T2) -> Grid<T2> {
+        let new_content: Box<[T2]> = self.content.iter().map(f).collect();
+        Grid {
+            size: self.size,
+            content: new_content
+        }
+    }
+
+    pub fn find_all(&self, f: fn(&T) -> bool) -> impl Iterator<Item = (Point, &T)> + '_ {
+        self.content.iter().enumerate().filter(move |(_, v)| f(v)).map(|(i, v)| (Point(i as i64 % self.size.0, i as i64 / self.size.0), v))
+    }
+
+    pub fn calculate_index(&self, position: Point) -> Option<usize> {
+        if position.in_bounds(self.size) {
+            Some((position.1 * self.size.0 + position.0) as usize)
+        }
+        else {
+            None
+        }
     }
 }

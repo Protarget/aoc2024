@@ -13,7 +13,7 @@ impl From<&str> for CityMap {
         let mut x = 0;
         let mut y = 0;
         let mut width = 0;
-    
+
         for c in input.chars() {
             match c {
                 '.' => { }
@@ -27,12 +27,12 @@ impl From<&str> for CityMap {
                     antennae.entry(c).or_default().push(location);
                }
             };
-    
+
             x += 1;
         }
 
         let size = Point(width, y + 1);
-        
+
         CityMap {
             size,
             antennae
@@ -75,7 +75,7 @@ impl CityMap {
                         }
                     }
                 }
-                
+
                 result
             })
     }

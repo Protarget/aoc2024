@@ -141,7 +141,7 @@ fn process(input: &str, ignore_control: bool) -> i64 {
                 }
             },
             _ => {
-                
+
             }
         }
     }

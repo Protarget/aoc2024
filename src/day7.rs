@@ -57,14 +57,14 @@ fn evaluate_equation_with_concatenation_mask(equation: &CalibrationEquation, bit
             .iter()
             .skip(1)
             .enumerate()
-            .fold(first, |v, (i, &x)| if ((1 << i) & concatenation_mask) > 0 { 
-                integer_concatenate(v, x) 
-            } else if ((1 << i) & operator_mask) > 0 { 
-                v * x 
-            } else { 
-                v + x 
+            .fold(first, |v, (i, &x)| if ((1 << i) & concatenation_mask) > 0 {
+                integer_concatenate(v, x)
+            } else if ((1 << i) & operator_mask) > 0 {
+                v * x
+            } else {
+                v + x
             });
-        
+
         if result == equation.target {
             return equation.target;
         }
