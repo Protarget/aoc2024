@@ -62,7 +62,6 @@ fn process_stone(memoizer: &mut StoneMemoizer, stone: u64, remaining: u64) -> u6
             }
             else if stone == 0 {
                 let result = process_stone(memoizer, 1, remaining - 1);
-                memoizer.insert(stone, remaining, result);
                 result
             }
             else {

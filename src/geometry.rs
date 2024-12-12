@@ -1,4 +1,4 @@
-use std::{fmt::Display, ops::{Add, Mul, Sub}};
+use std::{collections::HashSet, fmt::Display, ops::{Add, Mul, Sub}};
 
 #[derive(PartialEq, Eq, Clone, Copy, Hash, Debug)]
 pub enum Direction {
@@ -14,6 +14,14 @@ pub struct Point(pub i64, pub i64);
 pub struct Grid<T> {
     pub size: Point,
     content: Box<[T]>
+}
+
+#[derive(Debug)]
+pub struct DirectionMap<T> {
+    north: T,
+    east: T,
+    south: T,
+    west: T
 }
 
 impl Direction {
@@ -167,12 +175,111 @@ impl <T> Grid<T> {
         self.content.iter().enumerate().filter(move |(_, v)| f(v)).map(|(i, v)| (Point(i as i64 % self.size.0, i as i64 / self.size.0), v))
     }
 
+    pub fn iter(&self) -> impl Iterator<Item = (Point, &T)> + '_ {
+        self.content.iter().enumerate().map(|(i, v)| (Point(i as i64 % self.size.0, i as i64 / self.size.0), v))
+    }
+
+    pub fn flood_fill(&self, position: Point, f: impl Fn(&T) -> bool) -> Vec<(Point, DirectionMap<bool>)> {
+        let mut result: Vec<(Point, DirectionMap<bool>)> = vec![];
+        let mut visited: HashSet<Point> = HashSet::new();
+        let mut visit_stack = vec![position];
+
+        // Special case for initial not matching flood fill condition
+        let initial_value = self.get(position);
+
+        if initial_value.is_none() || !f(initial_value.unwrap()) {
+            return result;
+        }
+
+        while !visit_stack.is_empty() {
+            let visit_position = visit_stack.pop().unwrap();
+
+            if visit_position.in_bounds(self.size) && !visited.contains(&visit_position) {
+                let north_neighbor = self.get_with_index(visit_position + Direction::North);
+                let east_neighbor = self.get_with_index(visit_position + Direction::East);
+                let south_neighbor = self.get_with_index(visit_position + Direction::South);
+                let west_neighbor = self.get_with_index(visit_position + Direction::West);
+
+                let neighbors = [
+                    (Direction::North, north_neighbor),
+                    (Direction::East, east_neighbor),
+                    (Direction::South, south_neighbor),
+                    (Direction::West, west_neighbor)
+                ];
+
+                let valid_neighbors: Vec<(Direction, (Point, &T))> = neighbors
+                    .iter()
+                    .filter(|(_, x)| x.is_some())
+                    .map(|(d, x)| (*d, x.unwrap()))
+                    .filter(|(_, (_, x))| f(x))
+                    .collect();
+
+                let mut direction_map = DirectionMap::new(false);
+
+                for neighbor in valid_neighbors {
+                    direction_map.set(neighbor.0, true);
+                    visit_stack.push(neighbor.1.0);
+                }
+
+                result.push((visit_position, direction_map));
+                visited.insert(visit_position);
+            }
+        }
+
+        result
+    }
+
     pub fn calculate_index(&self, position: Point) -> Option<usize> {
         if position.in_bounds(self.size) {
             Some((position.1 * self.size.0 + position.0) as usize)
         }
         else {
             None
+        }
+    }
+}
+
+impl <T: Clone> Grid<T> {
+    pub fn new(size: Point, value: T) -> Grid<T> {
+        let content = vec![value; (size.0 * size.1) as usize];
+        Grid {
+            size,
+            content: content.into_boxed_slice()
+        }
+    }
+}
+
+impl <T> DirectionMap<T> {
+    pub fn iter(&self) -> impl Iterator<Item = &T> + '_ {
+        [&self.north, &self.east, &self.south, &self.west].into_iter()
+    }
+
+    pub fn get(&self, direction: Direction) -> &T {
+        match direction {
+            Direction::North => &self.north,
+            Direction::East => &self.east,
+            Direction::South => &self.south,
+            Direction::West => &self.west
+        }
+    }
+
+    pub fn set(&mut self, direction: Direction, value: T) {
+        match direction {
+            Direction::North => { self.north = value },
+            Direction::East => { self.east = value },
+            Direction::South => { self.south = value },
+            Direction::West => { self.west = value },
+        }
+    }
+}
+
+impl <T: Clone> DirectionMap<T> {
+    pub fn new(value: T) -> DirectionMap<T> {
+        DirectionMap {
+            north: value.clone(),
+            east: value.clone(),
+            south: value.clone(),
+            west: value.clone()
         }
     }
 }
