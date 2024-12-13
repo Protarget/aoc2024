@@ -1,6 +1,7 @@
 use std::time::Instant;
 
 mod geometry;
+mod algebra;
 mod day1;
 mod day2;
 mod day3;
@@ -13,6 +14,7 @@ mod day9;
 mod day10;
 mod day11;
 mod day12;
+mod day13;
 
 fn main() {
     let day: i32 = std::env::args().nth(1).unwrap_or("1".into()).parse().expect("Invalid day");
@@ -36,6 +38,7 @@ fn main() {
         10 => day10::run(input_path.as_str(), part),
         11 => day11::run(input_path.as_str(), part),
         12 => day12::run(input_path.as_str(), part),
+        13 => day13::run(input_path.as_str(), part),
         _ => panic!("Unknown day specified")
     };
 
