@@ -1,4 +1,4 @@
-use std::{default, fmt::{Debug, Display}, ops::{Add, Div, Mul, Sub}};
+use std::{fmt::{Debug, Display}, ops::{Add, Div, Mul, Sub}};
 
 pub struct Vector<T> {
     content: Box<[T]>

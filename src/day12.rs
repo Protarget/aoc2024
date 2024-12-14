@@ -32,7 +32,7 @@ fn solve(grid: Grid<char>, calculate_sides: bool) -> usize {
         if !visited.contains(&p) {
             let region = grid.flood_fill(p, |x| x == v);
 
-            for (vp, n) in region.iter() {
+            for (vp, _) in region.iter() {
                 visited.insert(*vp);
             }
 

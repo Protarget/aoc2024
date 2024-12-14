@@ -69,7 +69,7 @@ fn parse_input(input_string: &str, offset: i64) -> Vec<Matrix<f64>> {
         }
     }
 
-    if (!new) {
+    if !new {
         problems.push(current);
     }
 

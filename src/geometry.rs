@@ -1,4 +1,4 @@
-use std::{collections::HashSet, fmt::Display, ops::{Add, Mul, Sub}};
+use std::{collections::HashSet, fmt::Display, ops::{Add, Div, Mul, Rem, Sub}};
 
 #[derive(PartialEq, Eq, Clone, Copy, Hash, Debug)]
 pub enum Direction {
@@ -75,13 +75,46 @@ impl Sub<Point> for Point {
     }
 }
 
+impl Mul<Point> for Point {
+    type Output = Point;
+
+    fn mul(self, rhs: Point) -> Self::Output {
+        Point(self.0 * rhs.0, self.1 * rhs.1)
+    }
+}
+
+impl Div<Point> for Point {
+    type Output = Point;
+
+    fn div(self, rhs: Point) -> Self::Output {
+        Point(self.0 / rhs.0, self.1 / rhs.1)
+    }
+}
+
 impl Mul<i64> for Point {
     type Output = Point;
 
-    fn mul(self, other: i64) -> Self {
-        Point(self.0 * other, self.1 * other)
+    fn mul(self, rhs: i64) -> Self::Output {
+        Point(self.0 * rhs, self.1 * rhs)
     }
 }
+
+impl Div<i64> for Point {
+    type Output = Point;
+
+    fn div(self, rhs: i64) -> Self::Output {
+        Point(self.0 / rhs, self.1 / rhs)
+    }
+}
+
+impl Rem<Point> for Point {
+    type Output = Point;
+
+    fn rem(self, rhs: Point) -> Self::Output {
+        Point(self.0 % rhs.0, self.1 % rhs.1)
+    }
+}
+
 
 impl Add<Direction> for Point {
     type Output = Point;
@@ -109,6 +142,20 @@ impl Point {
         self.0 * self.1
     }
 
+    pub fn wrap(self, boundary: Point) -> Point {
+        let mut wrapped = self % boundary;
+
+        if wrapped.0 < 0 {
+            wrapped.0 = boundary.0 + wrapped.0;
+        }
+
+        if wrapped.1 < 0 {
+            wrapped.1 = boundary.1 + wrapped.1;
+        }
+
+        wrapped
+    }
+
     pub fn taxicab_distance(self, other: Point) -> i64 {
         (self.0 - other.0).abs() + (self.1 - other.1).abs()
     }
@@ -122,7 +169,6 @@ impl <'a, T: Into<&'a str>> From<T> for Grid<char> {
     fn from(value: T) -> Self {
         let mut content = vec![];
         let mut width = 0;
-        let mut height: i64 = 0;
         let string_content: &str = value.into();
         let mut x = 0;
         let mut y = 0;
@@ -141,7 +187,7 @@ impl <'a, T: Into<&'a str>> From<T> for Grid<char> {
             }
         }
 
-        height = y + 1;
+        let height = y + 1;
 
         let slice_content = content.into_boxed_slice();
 
